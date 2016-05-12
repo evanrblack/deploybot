@@ -2,10 +2,15 @@ require 'net/http'
 require 'faker'
 require 'json'
 require_relative 'startup'
+require_relative 'books'
 
 PHRASES = [Faker::Hacker.say_something_smart,
            "\"#{Faker::StarWars.quote}\"",
-           startup_of_the_week]
+           startup_of_the_week,
+           book('/home/evan/Scripts/deploybot/alice.txt'),
+           book('/home/evan/Scripts/deploybot/aeneid.txt')]
+
+#puts PHRASES
 
 LCD_FILE = "#{File.dirname(__FILE__)}/last_commit_deployed"
 
@@ -32,7 +37,7 @@ end
 params = { 
   channel: '#development', 
   username: 'deploybot', 
-  text: "C O M M I T   D E P L O Y E D\n#{PHRASES.sample}",
+  text: "C O M M I T   D E P L O Y E D",
   attachments: commits.map{ |commit| attachmentize(commit) },
   icon_emoji: ':robot_face:' }
 json_headers = { 'Content-Type' => 'application/json' }
