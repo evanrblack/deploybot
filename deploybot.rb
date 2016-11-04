@@ -1,18 +1,12 @@
 require 'net/http'
 require 'faker'
 require 'json'
-require_relative 'startup'
-require_relative 'books'
 
-PHRASES = [Faker::Hacker.say_something_smart,
-           "\"#{Faker::StarWars.quote}\"",
-           startup_of_the_week,
-           book('/home/evan/Scripts/deploybot/alice.txt'),
-           book('/home/evan/Scripts/deploybot/aeneid.txt')]
+TOP_LEVEL = `git rev-parse --show-toplevel`
+REPO_NAME = `basename #{TOP_LEVEL}`
+LCD_FILE = "#{File.dirname(__FILE__)}/last_commit_deployed_#{REPO_NAME}"
 
-#puts PHRASES
-
-LCD_FILE = "#{File.dirname(__FILE__)}/last_commit_deployed"
+abort if REPO_NAME.nil? || REPO_NAME == ''
 
 newest_commit = `git log -1 --pretty=%h`.strip
 if not File.exist?(LCD_FILE)
@@ -37,7 +31,7 @@ end
 params = { 
   channel: '#development', 
   username: 'deploybot', 
-  text: "C O M M I T   D E P L O Y E D",
+  text: "COMMIT DEPLOYED (#{REPO_NAME.upcase})",
   attachments: commits.map{ |commit| attachmentize(commit) },
   icon_emoji: ':robot_face:' }
 json_headers = { 'Content-Type' => 'application/json' }
