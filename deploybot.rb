@@ -3,7 +3,7 @@ require 'faker'
 require 'json'
 
 TOP_LEVEL = `git rev-parse --show-toplevel`
-REPO_NAME = `basename #{TOP_LEVEL}`
+REPO_NAME = `basename #{TOP_LEVEL}`.strip!
 LCD_FILE = "#{File.dirname(__FILE__)}/last_commit_deployed_#{REPO_NAME}"
 
 abort if REPO_NAME.nil? || REPO_NAME == ''
